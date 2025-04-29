@@ -322,7 +322,7 @@ function manejarFlujoSeguimiento(userInput) {
         .then((data) => {
           if (data.length > 0) {
             setTimeout(function () {
-              agregarMensajeChatbot("Coincidencias encontradas:");
+              agregarMensajeChatbot("Postulaciones encontradas:");
               data.forEach((item) => {
                 let mensaje =
                   `<p> ${item.puesto}</p>` +
