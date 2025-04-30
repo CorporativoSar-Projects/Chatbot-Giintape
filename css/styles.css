@@ -203,7 +203,7 @@
   background-color: #ffffff; /* Fondo para el chatbot */
   color: #333; /* Color de texto para el chatbot */
   padding: 10px;
-  border: 1px solid rgba(2, 48, 71, 0.5);
+  border: 1px solid rgba(2, 48, 71/*, 0.2*/);
   border-radius: 15px;
   margin: 5px;
   max-width: 80%;
