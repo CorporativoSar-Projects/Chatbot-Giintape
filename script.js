@@ -124,7 +124,7 @@ function agregarSelectorcategoria() {
 function mostrarSeleccionCategoria() {
   let selectCategoria = document.getElementById("seleccion-categoria");
   let categoriaSeleccionada = selectCategoria.value;
-  agregarMensajeUsuario(categoriaSeleccionada);
+  agregarMensajeChatbot(categoriaSeleccionada);
   deshabilitarBotonesNoSeleccionados(selectCategoria);
   iniciarBusqueda(categoriaSeleccionada);
 }
@@ -137,7 +137,7 @@ function confirmarB() {
   let selectCategoria = document.getElementById("seleccion-categoria");
   let categoriaSeleccionada = selectCategoria.value;
 
-  agregarMensajeUsuario(`Buscando vacantes de ${categoriaSeleccionada}...`);
+  agregarMensajeChatbot(`Buscando vacantes de ${categoriaSeleccionada}...`);
   // Deshabilitar las opciones del select
   let options = selectCategoria.getElementsByTagName("option");
   for (let option of options) {
@@ -224,7 +224,7 @@ function confirmarUbi() {
   let selectUbicacion = document.getElementById("seleccion-cate");
   let ubicacionSeleccionada = selectUbicacion.value;
 
-  agregarMensajeUsuario(`Buscando vacantes en ${ubicacionSeleccionada}...`);
+  agregarMensajeChatbot(`Buscando vacantes en ${ubicacionSeleccionada}...`);
   // Deshabilitar las opciones del select
   let options = selectUbicacion.getElementsByTagName("option");
   for (let option of options) {
