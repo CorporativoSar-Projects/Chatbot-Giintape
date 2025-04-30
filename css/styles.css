@@ -200,22 +200,25 @@
 
 /* Estilos para los mensajes del chatbot */
 .chatbot-message {
-  background-color: #f1f1f1; /* Fondo para el chatbot */
+  background-color: #ffffff; /* Fondo para el chatbot */
   color: #333; /* Color de texto para el chatbot */
   padding: 10px;
+  border: 1px solid rgba(2, 48, 71, 0.5);
   border-radius: 15px;
   margin: 5px;
   max-width: 80%;
   text-align: left;
   align-self: flex-start; /* Alinea los mensajes del chatbot a la izquierda */
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
-    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  box-shadow: rgba(2, 48, 71, 0.5) 0px 6px 12px -2px,
+  rgba(2, 48, 71, 0.3) 0px 3px 7px -3px;
 }
+/*Estilo para respuesta 
+
 
 /* Estilos para los mensajes del usuario */
 .user-message {
-  background-color: #007bff; /* Fondo azul para el usuario */
-  color: white; /* Texto blanco para mejor contraste */
+  background-color: #ffffff; /* Fondo azul para el usuario */
+  color: black; /* Texto blanco para mejor contraste */
   padding: 10px;
   border-radius: 15px;
   margin: 5px;
@@ -225,6 +228,7 @@
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
+
 .user-input-container {
   display: flex;
   justify-content: space-between;
