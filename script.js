@@ -80,7 +80,7 @@ function agregarMensajeUsuario(texto) {
 }
 
 function mostrarPreguntaPerfil() {
-  agregarMensajeChatbot("Selecciona la categoria de tu interes:");
+  agregarMensajeChatbot("Selecciona la categoría de tu interés:");
   agregarSelectorcategoria();
   // document.getElementById('user-input-container').style.display = 'block';
   deshabilitarBotonesNoSeleccionados(this);
@@ -113,7 +113,7 @@ function agregarSelectorcategoria() {
     selectCategoria.appendChild(option);
   });
   let defaultOption = document.createElement("option");
-  defaultOption.text = "Seleccione una categoria";
+  defaultOption.text = "Seleccione una categoría";
   defaultOption.selected = true;
   defaultOption.disabled = true;
   selectCategoria.insertBefore(defaultOption, selectCategoria.firstChild);
@@ -162,7 +162,7 @@ function confirmarB() {
           data.forEach((item) => {
             let mensaje =
               `<p>${item.nombre}</p>` +
-              `<p>Área: ${item.categoria}</p>` +
+              `<p>Categoría: ${item.categoria}</p>` +
               `<p>Ubicación: ${item.estado}.</p>` +
               `<p><a href="${item.link}" target="_blank">Postúlate</a></p>`;
             agregarMensajeChatbot(mensaje);
@@ -181,7 +181,7 @@ function confirmarB() {
 }
 
 function iniciarBusquedaPorUbicacion() {
-  agregarMensajeChatbot("Selecciona la ubicacion de tu interes:");
+  agregarMensajeChatbot("Selecciona la ubicación de tu interés:");
   agregarSelectorUbicacion();
   // document.getElementById('user-input-container').style.display = 'block';
   deshabilitarBotonesNoSeleccionados(this);
@@ -205,7 +205,7 @@ function agregarSelectorUbicacion() {
     selectUbicacion.appendChild(option);
   });
   let defaultOption = document.createElement("option");
-  defaultOption.text = "Seleccione una Ubicacion";
+  defaultOption.text = "Seleccione una Ubicación";
   defaultOption.selected = true;
   defaultOption.disabled = true;
   selectUbicacion.insertBefore(defaultOption, selectUbicacion.firstChild);
@@ -417,9 +417,9 @@ function funcionSi() {
     <div id="mensaje-inicial" class="chatbot-message">
       <p>¡Con gusto! ¿En que mas puedo ayudarte?</p>
       <div class="chatbot-button-container">
-        <button onclick="mostrarPreguntaPerfil()">Buscar vacantes por categoria</button>
-        <button onclick="iniciarBusquedaPorUbicacion()">Buscar vacantes por ubicacion</button>
-        <button onclick="seguimientoPostulacion()">Seguimiento de mi postulacion</button>
+        <button onclick="mostrarPreguntaPerfil()">Buscar vacantes por categoría</button>
+        <button onclick="iniciarBusquedaPorUbicacion()">Buscar vacantes por ubicación</button>
+        <button onclick="seguimientoPostulacion()">Seguimiento de mi postulación</button>
       </div>
     </div>`;
   let chatbotBody = document.querySelector(".chatbot-body");
