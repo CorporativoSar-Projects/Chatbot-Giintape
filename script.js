@@ -73,7 +73,7 @@ function agregarMensajeUsuario(texto) {
   if (texto.trim() === "") return;
   let contenedorMensajes = document.querySelector(".chatbot-body");
   let mensajeUsuario = document.createElement("div");
-  mensajeUsuario.className = "user-message";
+  mensajeUsuario.className = "user-message2";
   mensajeUsuario.innerHTML = `<p>${texto}</p>`;
   contenedorMensajes.appendChild(mensajeUsuario);
   mensajeUsuario.scrollIntoView({ behavior: "smooth" });
