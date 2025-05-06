@@ -371,8 +371,8 @@ function validateEmail(email) {
 function confirmacionAyuda() {
   let botonesHTML = `
         <div class="chatbot-message-buttons" style="margin-top: 20px;">
-            <button class="btnSi" style="margin-right: 10px;">Sí</button>
-            <button class="btnNo">No</button>
+            <button style="margin-right: 5px; border-radius: 15px; border: 1px solid #848383; padding: 4px 12px;">Sí</button>
+            <button class="btnNo" style="border-radius: 15px; border: 1px solid #848383; padding: 4px 10px;">No</button>
         </div>
     `;
   agregarMensajeChatbot("¿Puedo ayudarte en algo más? " + botonesHTML);
@@ -415,7 +415,7 @@ function agregarMensajeChatbot(texto) {
 function funcionSi() {
   let contenidoInicial = `
     <div id="mensaje-inicial" class="chatbot-message">
-      <p>¡Con gusto! ¿En que mas puedo ayudarte?</p>
+      <p>¡Con gusto! ¿En qué más puedo ayudarte?</p>
       <div class="chatbot-button-container">
         <button onclick="mostrarPreguntaPerfil()">Buscar vacantes por categoría</button>
         <button onclick="iniciarBusquedaPorUbicacion()">Buscar vacantes por ubicación</button>
