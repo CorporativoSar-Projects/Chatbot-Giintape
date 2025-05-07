@@ -371,7 +371,7 @@ function validateEmail(email) {
 function confirmacionAyuda() {
   let botonesHTML = `
         <div class="chatbot-message-buttons" style="margin-top: 20px;">
-            <button style="margin-right: 5px; border-radius: 15px; border: 1px solid #848383; padding: 4px 12px;">Sí</button>
+            <button class="btnSi" style="margin-right: 5px; border-radius: 15px; border: 1px solid #848383; padding: 4px 12px;">Sí</button>
             <button class="btnNo" style="border-radius: 15px; border: 1px solid #848383; padding: 4px 10px;">No</button>
         </div>
     `;
