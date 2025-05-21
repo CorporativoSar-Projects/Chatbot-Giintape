@@ -1,58 +1,86 @@
 <!-- Botón para abrir el chatbot -->
-  <div id="chatbot-toggle" class="chat-toggle" >
-  <img src="https://chatbot.giintapeinnovahue.com/img/chatbot2.png" alt="Chat" class="toggle-icon">
+<div id="chatbot-toggle" class="chat-toggle">
+  <img
+    src="https://chatbot.giintapeinnovahue.com/img/chatbot2.png"
+    alt="Chat"
+    class="toggle-icon"
+  />
   <span id="chatText" class="chat-text">¡Encuentra Vacantes!</span>
-  </div>
- 
+</div>
 
 <!-- Contenedor del Chatbot -->
-  <div id="chatbot-container" class="chatbot-container" style="display: none;">
-
-    <div class="chatbot-header">
-      <img src="https://chatbot.giintapeinnovahue.com/img/gi.png" alt="Chatbot" class="chatbot-icon">
-      JobHelper
-      <div class="conteiner">
-        <div class="chatbot-min" title="Minimizar" onclick="toggleChatbot()">
-          <img src="https://chatbot.giintapeinnovahue.com/img/line.png"/>
-        </div>
-        <div class="chatbot-close" title="Cerrar" onclick="cerrar()">
-          <img src="https://chatbot.giintapeinnovahue.com/img/close.png"/>
-        </div>
+<div id="chatbot-container" class="chatbot-container" style="display: none">
+  <div class="chatbot-header">
+    <img
+      src="https://chatbot.giintapeinnovahue.com/img/gi.png"
+      alt="Chatbot"
+      class="chatbot-icon"
+    />
+    JobHelper
+    <div class="conteiner">
+      <div class="chatbot-min" title="Minimizar" onclick="toggleChatbot()">
+        <img src="https://chatbot.giintapeinnovahue.com/img/line.png" />
       </div>
-    </div>
-
-    <div class="chatbot-body">
-      <div id="mensaje-inicial" class="chatbot-message">
-        <p>¡Saludos! Soy JobHelper, tu guía virtual en el mundo laboral. Mi misión es facilitarte el camino hacia oportunidades laborales que se alineen perfectamente con tus habilidades y expectativas. ¿Con qué te puedo ayudar?</p>
-        <div class="chatbot-button-container">
-          <button onclick="mostrarPreguntaPerfil()">Buscar vacantes por categoria</button>
-          <button onclick="iniciarBusquedaPorUbicacion()">Buscar vacantes por ubicacion</button>
-          <button onclick="seguimientoPostulacion()">Seguimiento de mi postulacion</button>
-        </div>
+      <div class="chatbot-close" title="Cerrar" onclick="cerrar()">
+        <img src="https://chatbot.giintapeinnovahue.com/img/close.png" />
       </div>
-    </div>
-
-
-<!-- Caja de texto y botón para enviar respuestas, inicialmente ocultos -->
-    <div id="user-input-container" class="user-input-container" style="display:none;">
-      <input type="text" id="user-input" placeholder="Escribe aquí tu respuesta...">
-      <button onclick="enviarRespuesta()">Enviar</button>
     </div>
   </div>
-  
+
+  <div class="chatbot-body">
+    <div id="mensaje-inicial" class="chatbot-message">
+      <p>
+        ¡Saludos! Soy JobHelper, tu guía virtual en el mundo laboral. Mi misión
+        es facilitarte el camino hacia oportunidades laborales que se alineen
+        perfectamente con tus habilidades y expectativas. ¿Con qué te puedo
+        ayudar?
+      </p>
+      <div class="chatbot-button-container">
+        <button onclick="mostrarPreguntaPerfil()">
+          Buscar vacantes por categoría
+        </button>
+        <button onclick="iniciarBusquedaPorUbicacion()">
+          Buscar vacantes por ubicación
+        </button>
+        <button onclick="seguimientoPostulacion()">
+          Seguimiento de mi postulación
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Caja de texto y botón para enviar respuestas, inicialmente ocultos -->
+  <div
+    id="user-input-container"
+    class="user-input-container"
+    style="display: none"
+  >
+    <input
+      type="text"
+      id="user-input"
+      placeholder="Escribe aquí tu respuesta..."
+    />
+    <button onclick="enviarRespuesta()">Enviar</button>
+  </div>
+</div>
+
 <!-- ubicacion-->
 <!-- Contenedor para seleccionar estado, oculto inicialmente -->
-  <div id="seleccion-estado-container" class="chatbot-message" style="display: none;">
-    <select id="seleccion-estado">
-      
-    </select>
-    
-  </div>
-  <!-- Contenedor para seleccionar alcaldía, oculto inicialmente -->
-  <div id="seleccion-alcaldia-container" class="chatbot-message" style="display: none;">
-    <select id="seleccion-alcaldia">
-      <!-- Opciones de alcaldías aquí -->
-    </select>
-    <!-- El botón para buscar vacantes se muestra después de seleccionar una alcaldía -->
-  </div>
-   
+<div
+  id="seleccion-estado-container"
+  class="chatbot-message"
+  style="display: none"
+>
+  <select id="seleccion-estado"></select>
+</div>
+<!-- Contenedor para seleccionar alcaldía, oculto inicialmente -->
+<div
+  id="seleccion-alcaldia-container"
+  class="chatbot-message"
+  style="display: none"
+>
+  <select id="seleccion-alcaldia">
+    <!-- Opciones de alcaldías aquí -->
+  </select>
+  <!-- El botón para buscar vacantes se muestra después de seleccionar una alcaldía -->
+</div>
