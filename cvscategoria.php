@@ -41,7 +41,7 @@ if (($handle = fopen($nombreArchivoCSV, "r")) !== FALSE) {
     fclose($handle);
 
     if (empty($resultados)) {
-        echo json_encode(["error" => "No existen coincidencias."]);
+        echo json_encode(["error" => "No encontré coincidencias."]);
     } else {
         echo json_encode($resultados);
     }
