@@ -147,7 +147,7 @@ function confirmarB() {
   }
 
   setTimeout(() => {
-    fetch("https://chatbot.giintapeinnovahue.com/cvscategoria.php", {
+    fetch("cvscategoria.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -155,8 +155,7 @@ function confirmarB() {
       body: `seleccion-categoria=${encodeURIComponent(categoriaSeleccionada)}`,
     })
       .then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
+      .then((data) => {        if (data.error) {
           agregarMensajeChatbot(data.error);
         } else {
           data.forEach((item) => {

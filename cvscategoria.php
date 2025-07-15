@@ -1,6 +1,6 @@
 <?php
 $categoriaSeleccionada = $_POST['seleccion-categoria'];
-$nombreArchivoCSV = 'https://chatbot.giintapeinnovahue.com/report_Job.csv';
+$nombreArchivoCSV = 'report_Job.csv';
 $enlaceFijo = 'https://envasesempT1.valhalla19.stage.jobs2web.com/job-invite/';
 
 if (($handle = fopen($nombreArchivoCSV, "r")) !== FALSE) {
@@ -40,9 +40,6 @@ if (($handle = fopen($nombreArchivoCSV, "r")) !== FALSE) {
 
     fclose($handle);
 
-   
-
-    file_put_contents(__DIR__ . "/log.txt", "PHP actualizado\n", FILE_APPEND);
 
     if (empty($resultados)) {
         echo json_encode(["error" => "No encontré coincidencias."]);
