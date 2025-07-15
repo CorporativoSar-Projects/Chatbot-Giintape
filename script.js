@@ -24,7 +24,7 @@ function toggleChatbot() {
 function cerrar() {
   let contenidoInicial = `
     <div id="mensaje-inicial" class="chatbot-message">
-      <p>¡Saludos! Soy JobHelper, tu guía virtual en el mundo laboral. Mi misión es facilitarte el camino hacia oportunidades laborales que se alineen perfectamente con tus habilidades y expectativas. ¿Con qué te puedo ayudar?</p>
+      <p>¡Hola! Soy IXAH, tu asistente virtual en el mundo laboral. ¿En qué te puedo ayudar hoy?</p>
       <div class="chatbot-button-container">
         <button onclick="mostrarPreguntaPerfil()">Buscar vacantes por categoría </button>
         <button onclick="iniciarBusquedaPorUbicacion()">Buscar vacantes por ubicación</button>
@@ -147,7 +147,7 @@ function confirmarB() {
   }
 
   setTimeout(() => {
-    fetch("https://chatbot.giintapeinnovahue.com/cvscategoria.php", {
+    fetch("cvscategoria.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -155,8 +155,7 @@ function confirmarB() {
       body: `seleccion-categoria=${encodeURIComponent(categoriaSeleccionada)}`,
     })
       .then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
+      .then((data) => {        if (data.error) {
           agregarMensajeChatbot(data.error);
         } else {
           data.forEach((item) => {
@@ -307,7 +306,7 @@ function manejarFlujoSeguimiento(userInput) {
     if (validateEmail(userInput)) {
       setTimeout(function () {
         agregarMensajeChatbot(
-          `Buscando estatus de tus postulaciones asociadas al correo: ${userInput}`
+          `Buscando el estatus de tus postulaciones`
         );
       }, 1000);
 
@@ -334,7 +333,7 @@ function manejarFlujoSeguimiento(userInput) {
             }, 3000);
           } else {
             setTimeout(function () {
-              agregarMensajeChatbot("No se encontraron coincidencias.");
+              agregarMensajeChatbot("No encontré coincidencias con ese correo.");
             }, 3000);
           }
 
@@ -371,11 +370,11 @@ function validateEmail(email) {
 function confirmacionAyuda() {
   let botonesHTML = `
         <div class="chatbot-message-buttons" style="margin-top: 20px;">
-            <button class="btnSi" style="margin-right: 5px; border-radius: 15px; border: 1px solid #848383; padding: 4px 12px;">Sí</button>
-            <button class="btnNo" style="border-radius: 15px; border: 1px solid #848383; padding: 4px 10px;">No</button>
+            <button class="btnSi" style="margin-right: 5px; border-radius: 15px; border: 1px solid #023047; padding: 4px 12px;background-color: #023047; color: white;">Sí</button>
+            <button class="btnNo" style="border-radius: 15px; border: 1px solid #023047; padding: 4px 10px; background-color: #023047; color: white; ">No</button>
         </div>
     `;
-  agregarMensajeChatbot("¿Puedo ayudarte en algo más? " + botonesHTML);
+  agregarMensajeChatbot("¿Puedo ayudarte con algo más? " + botonesHTML);
   let userInputContainer = document.getElementById("user-input-container");
   if (userInputContainer) {
     userInputContainer.style.display = "none";
@@ -431,8 +430,8 @@ function funcionNo() {
   setTimeout(function () {
     let mensajeDespedida = `
       <div style="text-align: center;">
-        <p>Gracias por usar JobHelper, es un gusto haber podido ayudarte... ¡Hasta la próxima!</p>
-        <img src="https://chatbot.giintapeinnovahue.com/img/gi.png" alt="" style="margin: 0 auto; display: block; width: 100px; height: auto;"/>
+        <p>Gracias por usarme, me dio mucho gusto poder ayudarte... ¡Hasta la próxima!</p>
+        <img src="img/LOGO_IXAH_FELIZ.svg" alt="" style="margin: 0 auto; display: block; width: 100px; height: auto;"/>
         <p>Impulsado por GIINTAPE INNOVAHUE!</p>
       </div>
     `;
