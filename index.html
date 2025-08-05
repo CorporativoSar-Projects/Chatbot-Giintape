@@ -2,13 +2,15 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Chatbot Giintape</title>
+    <title>Chatbot</title>
+    <link rel="shortcut icon" href="img/CABEZA_LOGO_IXAH-02.svg" />
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
+ 
     <!-- Botón para abrir el chatbot -->
     <div id="chatbot-toggle" class="chat-toggle">
-      <img src="img/CABEZA_LOGO_IXAH-02.svg" alt="Chat" class="toggle-icon" />
+      <img src="img/LOGO_GI.png" alt="Chat" class="toggle-icon" />
       <span id="chatText" class="chat-text">¡Encuentra Vacantes!</span>
     </div>
 
@@ -16,13 +18,13 @@
     <div id="chatbot-container" class="chatbot-container" style="display: none">
       <div class="chatbot-header">
         <img src="img/LOGO_GI.png" alt="Chatbot" class="chatbot-icon" />
-        IXAH
+        GIINTAPE
         <div class="conteiner">
           <div class="chatbot-min" title="Minimizar" onclick="toggleChatbot()">
-            <img src="img/minimizar.png" />
+            <img src="img/line.png" />
           </div>
           <div class="chatbot-close" title="Cerrar" onclick="cerrar()">
-            <img src="img/close2.png" />
+            <img src="img/close.png" />
           </div>
         </div>
       </div>
@@ -30,7 +32,8 @@
       <div class="chatbot-body">
         <div id="mensaje-inicial" class="chatbot-message">
           <p>
-            ¡Hola! Soy IXAH, tu asistente virtual en el mundo laboral. ¿En qué te puedo ayudar hoy?
+          ¡Hola! Soy tu asistente virtual, te ayudaré a conocer vacantes ¿Listo para comenzar?
+
           </p>
           <div class="chatbot-button-container">
             <button onclick="mostrarPreguntaPerfil()">

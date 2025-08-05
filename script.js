@@ -24,7 +24,7 @@ function toggleChatbot() {
 function cerrar() {
   let contenidoInicial = `
     <div id="mensaje-inicial" class="chatbot-message">
-      <p>¡Hola! Soy IXAH, tu asistente virtual en el mundo laboral. ¿En qué te puedo ayudar hoy?</p>
+      <p> ¡Hola! Soy tu asistente virtual, te ayudaré a conocer vacantes ¿Listo para comenzar?</p>
       <div class="chatbot-button-container">
         <button onclick="mostrarPreguntaPerfil()">Buscar vacantes por categoría </button>
         <button onclick="iniciarBusquedaPorUbicacion()">Buscar vacantes por ubicación</button>
@@ -233,7 +233,7 @@ function confirmarUbi() {
   }
 
   setTimeout(() => {
-    fetch("https://chatbot.giintapeinnovahue.com/cvsubicacion.php", {
+    fetch("cvsubicacion.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -310,7 +310,7 @@ function manejarFlujoSeguimiento(userInput) {
         );
       }, 1000);
 
-      fetch("https://chatbot.giintapeinnovahue.com/csvtest.php", {
+      fetch("csvtest.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -370,8 +370,8 @@ function validateEmail(email) {
 function confirmacionAyuda() {
   let botonesHTML = `
         <div class="chatbot-message-buttons" style="margin-top: 20px;">
-            <button class="btnSi" style="margin-right: 5px; border-radius: 15px; border: 1px solid #023047; padding: 4px 12px;background-color: #023047; color: white;">Sí</button>
-            <button class="btnNo" style="border-radius: 15px; border: 1px solid #023047; padding: 4px 10px; background-color: #023047; color: white; ">No</button>
+            <button class="btnSi" style="margin-right: 5px; border-radius: 15px; border: 1px solid #ffb703; padding: 4px 12px;background-color: #ffb703; color: black;">Sí</button>
+            <button class="btnNo" style="border-radius: 15px; border: 1px solid #ffb703; padding: 4px 10px; background-color: #ffb703; color: black; ">No</button>
         </div>
     `;
   agregarMensajeChatbot("¿Puedo ayudarte con algo más? " + botonesHTML);
@@ -430,9 +430,9 @@ function funcionNo() {
   setTimeout(function () {
     let mensajeDespedida = `
       <div style="text-align: center;">
-        <p>Gracias por usarme, me dio mucho gusto poder ayudarte... ¡Hasta la próxima!</p>
-        <img src="img/LOGO_IXAH_FELIZ.svg" alt="" style="margin: 0 auto; display: block; width: 100px; height: auto;"/>
-        <p>Impulsado por GIINTAPE INNOVAHUE!</p>
+        <p>¡Gracias por usar nuestro asistente virtual! Esperamos haberte acercado a tu próxima oportunidad laboral.</p>
+        <img src="img/LOGO_GI.png" alt="" style="margin: 0 auto; display: block; width: 100px; height: auto;"/>
+        <!--<p>Impulsado por GIINTAPE INNOVAHUE!</p>-->
       </div>
     `;
     agregarMensajeChatbot(mensajeDespedida);
