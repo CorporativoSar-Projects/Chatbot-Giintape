@@ -1,89 +1,79 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Chatbot</title>
-    <link rel="shortcut icon" href="img/CABEZA_LOGO_IXAH-02.svg" />
-    <link rel="stylesheet" href="css/styles.css" />
-  </head>
-  <body>
- 
-    <!-- Botón para abrir el chatbot -->
-    <div id="chatbot-toggle" class="chat-toggle">
-      <img src="img/LOGO_GI.png" alt="Chat" class="toggle-icon" />
-      <span id="chatText" class="chat-text">¡Encuentra Vacantes!</span>
-    </div>
 
-    <!-- Contenedor del Chatbot -->
-    <div id="chatbot-container" class="chatbot-container" style="display: none">
-      <div class="chatbot-header">
-        <img src="img/LOGO_GI.png" alt="Chatbot" class="chatbot-icon" />
-        GIINTAPE
-        <div class="conteiner">
-          <div class="chatbot-min" title="Minimizar" onclick="toggleChatbot()">
-            <img src="img/line.png" />
-          </div>
-          <div class="chatbot-close" title="Cerrar" onclick="cerrar()">
-            <img src="img/close.png" />
-          </div>
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot JobHelper</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+</head>
+
+<body>
+  <!-- Botón para abrir el chatbot -->
+  <div id="chatbot-toggle" class="chat-toggle">
+    <img src="https://chatbot.giintapeinnovahue.com/img/chatbot2.png" alt="Chat" class="toggle-icon">
+    <span id="chatText" class="chat-text"></span>
+  </div>
+
+  <!-- Contenedor del Chatbot -->
+  <div id="chatbot-container" class="chatbot-container" style="display: none;">
+
+    <div class="chatbot-header">
+      <img src="https://chatbot.giintapeinnovahue.com/img/gi.png" alt="Chatbot" class="chatbot-icon">
+      <span class="chatbot-nombre"></span>
+      <div class="conteiner">
+        <div class="chatbot-min" title="Minimizar" onclick="toggleChatbot()">
+          <svg class="icono-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M 6 12 C 6 11.449219 6.449219 11 7 11 L 17 11 C 17.550781 11 18 11.449219 18 12 C 18 12.550781 17.550781 13 17 13 L 7 13 C 6.449219 13 6 12.550781 6 12 Z" />
+          </svg>
+        </div>
+        <div class="chatbot-close" title="Cerrar" onclick="cerrar()">
+          <svg class="icono-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="miter">
+            <path d="M 16 8 L 8 16 M 8 8 L 16 16" />
+          </svg>
         </div>
       </div>
+    </div>
 
-      <div class="chatbot-body">
-        <div id="mensaje-inicial" class="chatbot-message">
-          <p>
-          ¡Hola! Soy tu asistente virtual, te ayudaré a conocer vacantes ¿Listo para comenzar?
-
-          </p>
-          <div class="chatbot-button-container">
-            <button onclick="mostrarPreguntaPerfil()">
-              Buscar vacantes por categoría
-            </button>
-            <button onclick="iniciarBusquedaPorUbicacion()">
-              Buscar vacantes por ubicación
-            </button>
-            <button onclick="seguimientoPostulacion()">
-              Seguimiento de mi postulación
-            </button>
-          </div>
+    <div class="chatbot-body">
+      <div id="mensaje-inicial" class="chatbot-message">
+        <p></p>
+        <div class="chatbot-button-container">
+          <button onclick="mostrarPreguntaPerfil()"></button>
+          <button onclick="iniciarBusquedaPorUbicacion()"></button>
+          <button onclick="seguimientoPostulacion()"></button>
         </div>
       </div>
-
-      <!-- Caja de texto y botón para enviar respuestas, inicialmente ocultos -->
-      <div
-        id="user-input-container"
-        class="user-input-container"
-        style="display: none"
-      >
-        <input
-          type="text"
-          id="user-input"
-          placeholder="Escribe aquí tu respuesta..."
-        />
-        <button onclick="enviarRespuesta()">Enviar</button>
-      </div>
     </div>
 
-    <!-- ubicacion-->
-    <!-- Contenedor para seleccionar estado, oculto inicialmente -->
-    <div
-      id="seleccion-estado-container"
-      class="chatbot-message"
-      style="display: none"
-    >
-      <select id="seleccion-estado"></select>
+    <!-- Caja de texto y botón para enviar respuestas, inicialmente ocultos -->
+    <div id="user-input-container" class="user-input-container" style="display:none;">
+      <input type="text" id="user-input" placeholder="Escribe aquí tu respuesta...">
+      <button onclick="enviarRespuesta()">Enviar</button>
     </div>
-    <!-- Contenedor para seleccionar alcaldía, oculto inicialmente -->
-    <div
-      id="seleccion-alcaldia-container"
-      class="chatbot-message"
-      style="display: none"
-    >
-      <select id="seleccion-alcaldia">
-        <!-- Opciones de alcaldías aquí -->
-      </select>
-      <!-- El botón para buscar vacantes se muestra después de seleccionar una alcaldía -->
-    </div>
-    <script src="script.js"></script>
-  </body>
+  </div>
+
+  <input type="hidden" id="nomEmp" value="tecno6120vp">
+
+  <!-- ubicacion-->
+  <!-- Contenedor para seleccionar estado, oculto inicialmente -->
+  <div id="seleccion-estado-container" class="chatbot-message" style="display: none;">
+    <select id="seleccion-estado">
+
+    </select>
+
+  </div>
+  <!-- Contenedor para seleccionar alcaldía, oculto inicialmente -->
+  <div id="seleccion-alcaldia-container" class="chatbot-message" style="display: none;">
+    <select id="seleccion-alcaldia">
+      <!-- Opciones de alcaldías aquí -->
+    </select>
+    <!-- El botón para buscar vacantes se muestra después de seleccionar una alcaldía -->
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
 </html>
