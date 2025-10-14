@@ -472,12 +472,15 @@ function iniciarBusquedaPorUbicacion() {
 
 //Modal del postulante
 function abrirModalPostulacion(idRequisicion) {
- 
-  const existente = document.getElementById("modal-postulacion");
-  if (existente) existente.remove();
+    const id_emp = document.getElementById('nomEmp').value;
 
-  const modalHTML = `
-    <div class="modal fade" id="modal-postulacion" tabindex="-1" aria-hidden="true">
+    // Eliminar modal previo
+    const existente = document.getElementById("modal-postulacion");
+    if (existente) existente.remove();
+
+    // Crear nuevo modal
+    const modalHTML = `
+    <div class="modal fade" id="modal-postulacion" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
 
@@ -499,6 +502,15 @@ function abrirModalPostulacion(idRequisicion) {
                          class="form-control" style="border-radius:25px;">
                 </div>
                 <button type="button" class="btn btn-primary" id="btnVerificarCorreo">Siguiente</button>
+              </div>
+
+              <!-- Paso 1.5: Ingresar token (solo si el correo ya existe) -->
+              <div id="pasoToken" style="display:none;">
+                <div class="form-group mb-3">
+                  <label>Código de verificación</label>
+                  <input type="text" id="token_verificacion" name="token_verificacion" class="form-control" style="border-radius:25px;">
+                </div>
+                <button type="button" class="btn btn-primary" id="btnVerificarToken">Verificar</button>
               </div>
 
               <!-- Paso 2: Datos completos -->
@@ -542,119 +554,137 @@ function abrirModalPostulacion(idRequisicion) {
       </div>
     </div>`;
 
- document.body.insertAdjacentHTML('beforeend', modalHTML);
-  const modal = document.getElementById("modal-postulacion");
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    const modal = document.getElementById("modal-postulacion");
 
-  // Añadir blur al body excepto al modal
-  const bodyChildren = Array.from(document.body.children).filter(c => c !== modal);
-  bodyChildren.forEach(el => el.classList.add('blur-background'));
+    // Abrir modal
+    $(modal).modal('show');
 
-  
-  $(modal).modal('show');
+    // Limpiar blur y aplicar al abrir
+    const bodyChildren = Array.from(document.body.children).filter(c => c !== modal);
+    bodyChildren.forEach(el => el.classList.add('blur-background'));
 
-  // Al cerrar modal quita blur
-  $(modal).on('hidden.bs.modal', function () {
-    bodyChildren.forEach(el => el.classList.remove('blur-background'));
-    modal.remove();
-  });
+    $(modal).on('hidden.bs.modal', function () {
+        bodyChildren.forEach(el => el.classList.remove('blur-background'));
+        modal.remove();
+    });
 
-  // Inicializar modal
-  $('#modal-postulacion').modal('show');
-  aplicarEstilosModal();
+    aplicarEstilosModal();
 
-  // ------------------ Verificar correo ------------------
-  $('#btnVerificarCorreo').on('click', function () {
-    const correo = $('#correo_candidate').val().trim();
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!regex.test(correo)) {
-      alert("Ingresa un correo válido");
-      return;
+        $('#formPostulacion').on('keypress', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+      }
+    });
+
+    // ------------------ Función para mostrar Paso 2 ------------------
+function mostrarPaso2(datos = {}) {
+    $('#paso1, #pasoToken').hide();
+    $('#paso2').show();
+
+    // Llenar campos del candidato
+    $('#nombre_candidate').val(datos.nombre_candidate || '');
+    $('#apellidop_candidate').val(datos.apellidop_candidate || '');
+    $('#apellidom_candidate').val(datos.apellidom_candidate || '');
+    $('#tel_candidate').val(datos.tel_candidate || '');
+
+    // Mostrar CV existente si existe
+    if (datos.cv_link && datos.cv_link !== 'null' && datos.cv_link !== '') {
+        $('#cvInfo').html(`
+            <p>Ya tienes un CV cargado: 
+                <a href="${datos.cv_link}" target="_blank">Ver/Descargar CV</a>
+            </p>
+            <p>Si deseas actualizarlo, sube un nuevo archivo PDF. De lo contrario, deja este campo vacío.</p>
+        `);
+    } else {
+        $('#cvInfo').html('');
     }
 
-    fetch("http://localhost/Chatbot-AdminCenter/modelo/guardarPostulacion.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ correo_candidate: correo })
-    })
-      .then(res => res.json())
-      .then(data => {
-        // Limpiar info anterior
-        $('#cvInfo').remove();
+    $('#btnEnviar').show();
+}
+    // ------------------ Verificar correo ------------------
+    $('#btnVerificarCorreo').off('click').on('click', function () {
+        const correo = $('#correo_candidate').val().trim();
+        if (!validateEmail(correo)) { alert("Ingresa un correo válido"); return; }
 
-        if (data && Object.keys(data).length > 0) {
-          $('#nombre_candidate').val(data.nombre_candidate);
-          $('#apellidop_candidate').val(data.apellidop_candidate);
-          $('#apellidom_candidate').val(data.apellidom_candidate);
-          $('#tel_candidate').val(data.tel_candidate);
+        fetch("http://localhost/Chatbot-AdminCenter/modelo/guardarPostulacion.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ correo_candidate: correo })
+        })
+        .then(res => res.json())
+        .then(data => {
+           
+          if (manejarSesionExpirada(data)) return; 
+           // <<--- Checar sesión expirada
+            if (data.requiere_token) {
+                // Paso token
+                $('#paso1').hide();
+                $('#pasoToken').show();
 
-          if (data.cv_link) {
-            const cvLinkHTML = `
-                        <div id="cvInfo">
-                            <p>Ya tienes un CV cargado: 
-                                <a href="${data.cv_link}" target="_blank">Descargar CV</a>
-                            </p>
-                            <p>Si deseas actualizarlo, sube un nuevo archivo PDF. De lo contrario, deja este campo vacío.</p>
-                        </div>`;
-            $('#CV_candidate').parent().append(cvLinkHTML);
-          }
-        } else {
-          $('#nombre_candidate').val('');
-          $('#apellidop_candidate').val('');
-          $('#apellidom_candidate').val('');
-          $('#tel_candidate').val('');
-        }
+                $('#btnVerificarToken').off('click').on('click', function () {
+                    const tokenIngresado = $('#token_verificacion').val().trim();
+                    fetch("http://localhost/Chatbot-AdminCenter/modelo/guardarPostulacion.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ correo_candidate: correo, token: tokenIngresado })
+                    })
+                    .then(res => res.json())
+                    .then(resp => {
+                        if(resp.valido) {
+                            mostrarPaso2(resp.datosCandidato || resp);
+                        } else {
+                            alert(resp.mensaje || "Código incorrecto");
+                        }
+                    });
+                });
 
-        // Mostrar paso 2
-        $('#paso1').hide();
-        $('#paso2').show();
-        $('#btnEnviar').show();
-
-           // ------------------ Validación de tamaño de CV ------------------
-        const inputCV = document.getElementById("CV_candidate");
-        const btnEnviar = document.getElementById("btnEnviar");
-        const cvInfo = document.getElementById("cvInfo") || document.createElement("div");
-
-        if (inputCV) {
-          inputCV.addEventListener("change", function () {
-            const file = this.files[0];
-            if (file) {
-              const sizeMB = file.size / (1024 * 1024);
-              if (sizeMB > 5) {
-                cvInfo.innerHTML = `<p style="color:red;">El archivo es demasiado grande. Máximo permitido: 5 MB</p>`;
-                btnEnviar.disabled = true;
-                this.value = "";
-              } else {
-                cvInfo.innerHTML = `<p style="color:green;">Archivo listo para subir (${sizeMB.toFixed(2)} MB)</p>`;
-                btnEnviar.disabled = false;
-              }
             } else {
-              cvInfo.innerHTML = "";
-              btnEnviar.disabled = false;
+                // Paso 2 directo
+                mostrarPaso2(data.datosCandidato || {
+                    nombre_candidate: data.nombre_candidate,
+                    apellidop_candidate: data.apellidop_candidate,
+                    apellidom_candidate: data.apellidom_candidate,
+                    tel_candidate: data.tel_candidate,
+                     cv_link: data.cv_link
+                });
             }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Error al verificar el correo");
+        });
+    });
+  // ------------------ Validación CV ------------------
+  $('#CV_candidate').on('change', function () {
+    const file = this.files[0];
+    const cvInfo = $('#cvInfo');
+    const btnEnviar = $('#btnEnviar');
 
-            if (!document.getElementById("cvInfo")) {
-              inputCV.parentNode.appendChild(cvInfo);
-            }
-          });
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        alert("Error al verificar el correo");
-      });
+    if (file) {
+      const sizeMB = file.size / (1024 * 1024);
+      if (sizeMB > 5) {
+        cvInfo.html(`<p style="color:red;">El archivo es demasiado grande. Máximo permitido: 5 MB</p>`);
+        btnEnviar.prop('disabled', true);
+        this.value = "";
+      } else {
+        cvInfo.html(`<p style="color:green;">Archivo listo (${sizeMB.toFixed(2)} MB)</p>`);
+        btnEnviar.prop('disabled', false);
+      }
+    } else {
+      cvInfo.html('');
+      btnEnviar.prop('disabled', false);
+    }
   });
 
   // ------------------ Envío final ------------------
   $('#formPostulacion').on('submit', function (e) {
     e.preventDefault();
-
-    // Validación JS de campos obligatorios
     const nombre = $('#nombre_candidate').val().trim();
     const apellidop = $('#apellidop_candidate').val().trim();
     const tel = $('#tel_candidate').val().trim();
-
     if (!nombre || !apellidop || !tel) {
-      alert("Por favor completa todos los campos obligatorios");
+      alert("Completa todos los campos obligatorios");
       return;
     }
 
@@ -666,32 +696,50 @@ function abrirModalPostulacion(idRequisicion) {
       method: "POST",
       body: formData
     })
-      .then(res => res.json())
-      .then(data => {
-        if (data.tipo === "alerta") {
-          Swal.fire({
-            icon: 'error',
-            title: 'Atención',
-            text: data.mensaje,
-            confirmButtonColor: windowConfig.estilos.colorPrimario || '#4caf50'
-          });
-        } else {
-          Swal.fire({
-            icon: 'success',
-            title: '¡Éxito!',
-            text: data.mensaje || "Postulación enviada correctamente",
-            confirmButtonColor: windowConfig.estilos.colorPrimario || '#4caf50'
-          }).then(() => {
-            $('#modal-postulacion').modal('hide');
-          });
-        }
+    .then(res => res.json())
+    .then(data => {
+      if (manejarSesionExpirada(data)) return;
 
-      })
-      .catch(err => {
-        console.error(err);
-        alert("Error al enviar la postulación");
-      });
+      if (data.tipo === "alerta") {
+        Swal.fire({ icon: 'error', title: 'Atención', text: data.mensaje });
+      } else {
+           Swal.fire({
+      icon: 'success',
+      title: '¡Éxito!',
+      text: data.mensaje || "Postulación enviada correctamente",
+        }).then(() => {
+      $('#modal-postulacion').modal('hide'); // Cerrar modal con jQuery
+    });
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error al enviar la postulación");
+    });
   });
+
+
+}
+
+
+// ------------------ FUNCION GLOBAL PARA SESIÓN EXPIRADA ------------------
+function manejarSesionExpirada(data) {
+  if (data.sesion_expirada) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Sesión expirada',
+      text: data.mensaje || "Tu sesión ha expirado. Por favor, vuelve a iniciar el proceso.",
+      confirmButtonText: 'Aceptar',
+      confirmButtonColor: '#f39c12',
+      allowOutsideClick: false
+    }).then(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+      location.reload(); // reinicia el chatbot
+    });
+    return true; // indica que la sesión estaba expirada
+  }
+  return false;
 }
 
 // -------------------- SEGUIMIENTO DE POSTULACIONES --------------------
@@ -767,9 +815,10 @@ function aplicarEstilosModal() {
 
   const btnSiguiente = document.getElementById("btnVerificarCorreo");
   const btnEnviar = document.getElementById("btnEnviar");
+   const btnToken = document.getElementById("btnVerificarToken");
   const btnCancelar = document.querySelector("#modal-postulacion .btn-secondary");
 
-  [btnSiguiente, btnEnviar].forEach(btn => {
+  [btnSiguiente, btnEnviar, btnToken].forEach(btn => {
     if (btn) {
       btn.style.backgroundColor = windowConfig.estilos.colorPrimario;
       btn.style.color = windowConfig.estilos.colorTexto || "#fff";

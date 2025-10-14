@@ -198,7 +198,13 @@
   width: 60px; /* O el tamaño que prefieras */
   height: 60px;
   border-radius: 50%; /* Esto hará que la imagen sea completamente redonda */
-  object-fit: cover;
+  overflow: hidden;
+}
+
+.toggle-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ajusta la imagen dentro del círculo sin deformarla */
 }
 
 .chatbot-icon {
