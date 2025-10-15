@@ -287,15 +287,21 @@ function mostrarSelect(columnaClave, mensajeUsuario, selectId, textoDefault) {
         let mensaje = "<div class='resultado-csv'>";
         let link = null; 
 
-        for (const key in emp) {
-          if (emp.hasOwnProperty(key) && emp[key]) {
+         // Tomar solo las primeras 5 columnas
+        const keys = Object.keys(emp).filter(k => k && !k.startsWith("_")).slice(0, 5);
+
+
+        //for (const key in emp) { Aqui se eleccionan todas la columnas del csv 
+          //if (emp.hasOwnProperty(key) && emp[key]) {
+          keys.forEach(key => {
+              if (emp[key]) {
             if (key.toLowerCase() === "link") {
               link = emp[key]; // Guardar el link para mostrar al final
             } else {
               mensaje += `<p><strong>${key}:</strong> ${emp[key]}</p>`;
             }
           }
-        }
+         });
 
         // Mostrar el link al final si existe
         if (link) {
