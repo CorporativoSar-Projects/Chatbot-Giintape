@@ -2,7 +2,7 @@
 
 //CARGAR CONFIGURACIÓN DESDE JSON 
 const id_emp = document.getElementById('nomEmp').value;
-const urlConfig = `http://localhost/Chatbot-AdminCenter/getConfig.php?id_emp=${id_emp}`;
+const urlConfig = `http://localhost/Chatbot-AdminCenter/getConfigExterno.php?archivo=${id_emp}`;
 let windowConfig = {};
 let chatbotMinimizado = false;
 let flujoConversacion = "";
@@ -14,6 +14,7 @@ let csvDataPorColumna = {};
 function aplicarEstilosBotones(contenedor) {
   if (!windowConfig.estilos) return;
   const botones = contenedor.querySelectorAll("button");
+
   botones.forEach(boton => {
     // Estilo base
     boton.style.backgroundColor = windowConfig.estilos.colorSecundario;
@@ -199,6 +200,9 @@ function manejarTema(conver) {
   if (!conver) return;
 
   temaEnCurso = true;
+  // Deshabilitar todos los botones mientras se procesa este tema
+  const botones = document.querySelectorAll("#mensaje-inicial button");
+  botones.forEach(btn => btn.disabled = true);
   agregarMensajeChatbot(conver.mensaje || "Selecciona una opción:");
 
   if (conver.urlInforme && conver.columna) {
@@ -221,7 +225,9 @@ function cargarCSV(url, columnaClave, esSeguimiento = false) {
     skipEmptyLines: true,
     complete: function (results) {
       // Guardar los datos por columna
-      csvDataPorColumna[columnaClave] = results.data;
+      csvDataPorColumna[columnaClave] = esSeguimiento
+        ? results.data  // cargar todo
+        : results.data.filter(item => item['Estado de publicación'] === 'Publicado');
 
       // Si no es seguimiento, mostrar select
       if (!esSeguimiento) {
@@ -254,21 +260,32 @@ function mostrarSelect(columnaClave, mensajeUsuario, selectId, textoDefault) {
   select.id = selectId;
   select.style.marginTop = "10px";
 
+
+  // Mapa de columnas internas 
+  const nombresColumnas = {
+    "reqId_ix": "ID de vacante",
+    "title_ix":"Nombre de la vacante",
+    "category_ix": "Categoría",
+    "location_ix": "Ubicación",
+    // agrega más columnas aquí según el CSV
+  };
+
+
   select.onchange = function () {
     const valorSeleccionado = this.value;
 
     const div = document.createElement("div");
-    div.className = "user-message2";
+    div.className = "user-message";
     div.innerHTML = `${mensajeUsuario} ${valorSeleccionado}...`;
 
-    if (windowConfig.estilos) {
-      div.style.backgroundColor = windowConfig.estilos.colorRespuestaUsuario;
-      div.style.color = windowConfig.estilos.colorTexto;
-      div.style.borderRadius = "12px";
-      div.style.padding = "8px 12px";
-      div.style.maxWidth = "80%";
-      div.style.margin = "5px 0";
-    }
+    //if (windowConfig.estilos) {
+    //div.style.backgroundColor = windowConfig.estilos.colorRespuestaUsuario;
+    //div.style.color = windowConfig.estilos.colorTexto;
+    //div.style.borderRadius = "12px";
+    //div.style.padding = "8px 12px";
+    //div.style.maxWidth = "80%";
+    //div.style.margin = "5px 0";
+    //}
 
     contenedor.appendChild(div);
     div.scrollIntoView({ behavior: "smooth" });
@@ -285,34 +302,54 @@ function mostrarSelect(columnaClave, mensajeUsuario, selectId, textoDefault) {
       agregarMensajeChatbot(`Resultados encontrados en ${valorSeleccionado}:`);
       resultados.forEach(emp => {
         let mensaje = "<div class='resultado-csv'>";
-        let link = null; 
+        let link = null;
 
-         // Tomar solo las primeras 5 columnas
-        const keys = Object.keys(emp).filter(k => k && !k.startsWith("_")).slice(0, 5);
+        // Tomar solo las primeras 5 columnas
+        // const keys = Object.keys(emp).filter(k => k && !k.startsWith("_")).slice(0, 5);
 
 
-        //for (const key in emp) { Aqui se eleccionan todas la columnas del csv 
-          //if (emp.hasOwnProperty(key) && emp[key]) {
-          keys.forEach(key => {
-              if (emp[key]) {
+        for (const key in emp) {
+          if (emp.hasOwnProperty(key) && emp[key]) {
             if (key.toLowerCase() === "link") {
               link = emp[key]; // Guardar el link para mostrar al final
-            } else {
-              mensaje += `<p><strong>${key}:</strong> ${emp[key]}</p>`;
+            } else if (nombresColumnas[key]) {//antes estaba else
+              //mensaje += `<p><strong>${key}:</strong> ${emp[key]}</p>`;
+              mensaje += `<p><strong>${nombresColumnas[key]}:</strong> ${emp[key]}</p>`;
             }
           }
-         });
+        }
+        // });
 
         // Mostrar el link al final si existe
         if (link) {
-          if (windowConfig.funcionamiento && windowConfig.funcionamiento.integracionActiva === true) {
-            mensaje += `
-            <button class="btn btn-primary" onclick="abrirModalPostulacion('${emp['ID de requisición de personal']}')">
-                Postúlate
-            </button>
-        `;
+          const funcionamiento = windowConfig.funcionamiento || {};
+          const tipoIntegracion = funcionamiento.tipoIntegracion || "estandar";
+          const integracionActiva = funcionamiento.integracionActiva === true;
+          if (integracionActiva) {
+            if (tipoIntegracion === "sftp") {
+              // Si es SFTP → botón que abre el modal
+              mensaje += `
+        <button class="btn btn-primary" onclick="abrirModalPostulacion('${emp['reqId_ix']}', '${emp['title_ix']}')">
+          Postúlate
+        </button>
+      `;
+            } else if (tipoIntegracion === "estandar") {
+              // Si es estándar → usar URL del sitio de carreras
+              const baseUrl = funcionamiento.urlSitioCarreras || "";
+              const reqId = emp["reqId_ix"] || "";
+              const urlFinal = baseUrl && reqId ? `${baseUrl}${reqId}` : link;
+
+              mensaje += `
+        <p>
+          <a href="${urlFinal}" target="_blank">
+            Postúlate
+          </a>
+        </p>
+      `;
+            }
           } else {
-            mensaje += `<p><a href="${link}" target="_blank">Postúlate</a></p>`;
+            // Si la integración no está activa → usar link normal del CSV
+            mensaje += `<p><a href="${link}" target="_blank" class="btn btn-primary">Postúlate</a></p>`;
           }
         }
         mensaje += "</div>";
@@ -391,21 +428,50 @@ function toggleChatbot() {
 }
 
 function cerrar() {
-  const contenidoInicial = `
-          <div id="mensaje-inicial" class="chatbot-message">
-              <p>${windowConfig.estilos.saludo || "¡Hola! Soy tu asistente virtual!"}</p>
-              <div class="chatbot-button-container">
-                  <button onclick="mostrarPreguntaPerfil()">Buscar vacantes por categoría</button>
-                  <button onclick="iniciarBusquedaPorUbicacion()">Buscar vacantes por ubicación</button>
-                  <button onclick="seguimientoPostulacion()">Seguimiento de mi postulación</button>
-              </div>
-          </div>`;
   const chatbotBody = document.querySelector(".chatbot-body");
-  chatbotBody.innerHTML = contenidoInicial;
-  aplicarEstilosBotones(chatbotBody);
+  chatbotBody.innerHTML = ""; // Limpia el contenido
+
+  // Crear mensaje inicial basado en la configuración
+  const mensajeInicial = document.createElement("div");
+  mensajeInicial.id = "mensaje-inicial";
+  mensajeInicial.className = "chatbot-message";
+
+  const saludo = document.createElement("p");
+  saludo.textContent = windowConfig.estilos.saludo || "¡Hola! Soy tu asistente virtual!";
+  mensajeInicial.appendChild(saludo);
+
+  const botonesContainer = document.createElement("div");
+  botonesContainer.className = "chatbot-button-container";
+
+  // Cargar los botones desde la configuración JSON
+  if (windowConfig.conversacion) {
+    windowConfig.conversacion.forEach(conver => {
+      const btn = document.createElement("button");
+      btn.textContent = conver.tema;
+      btn.onclick = () => manejarTema(conver);
+      botonesContainer.appendChild(btn);
+    });
+  }
+
+  mensajeInicial.appendChild(botonesContainer);
+  chatbotBody.appendChild(mensajeInicial);
+
+  aplicarEstilosBotones(mensajeInicial);
+
+  // Ocultar input de seguimiento
+  const inputContainer = document.getElementById("user-input-container");
+  if (inputContainer) {
+    inputContainer.style.display = "none";
+    const userInput = document.getElementById("user-input");
+    if (userInput) userInput.value = "";
+  }
+
+  // Resetear estado
+  temaEnCurso = false;
+  chatbotMinimizado = false;
+
   toggleChatbot();
 }
-
 // -------------------- INICIALIZACIÓN --------------------
 document.addEventListener("DOMContentLoaded", () => {
   cargarConfigChatbot();
@@ -477,15 +543,15 @@ function iniciarBusquedaPorUbicacion() {
 }
 
 //Modal del postulante
-function abrirModalPostulacion(idRequisicion) {
-    const id_emp = document.getElementById('nomEmp').value;
+function abrirModalPostulacion(idRequisicion, nombreVacante) {
+  const id_emp = document.getElementById('nomEmp').value;
 
-    // Eliminar modal previo
-    const existente = document.getElementById("modal-postulacion");
-    if (existente) existente.remove();
+  // Eliminar modal previo
+  const existente = document.getElementById("modal-postulacion");
+  if (existente) existente.remove();
 
-    // Crear nuevo modal
-    const modalHTML = `
+  // Crear nuevo modal
+  const modalHTML = `
     <div class="modal fade" id="modal-postulacion" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -560,31 +626,33 @@ function abrirModalPostulacion(idRequisicion) {
       </div>
     </div>`;
 
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-    const modal = document.getElementById("modal-postulacion");
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  const modal = document.getElementById("modal-postulacion");
 
-    // Abrir modal
-    $(modal).modal('show');
+  // Abrir modal
+  $(modal).modal('show');
 
-    // Limpiar blur y aplicar al abrir
-    const bodyChildren = Array.from(document.body.children).filter(c => c !== modal);
-    bodyChildren.forEach(el => el.classList.add('blur-background'));
+  // Limpiar blur y aplicar al abrir
+  const bodyChildren = Array.from(document.body.children).filter(c => c !== modal);
+  bodyChildren.forEach(el => el.classList.add('blur-background'));
 
-    $(modal).on('hidden.bs.modal', function () {
-        bodyChildren.forEach(el => el.classList.remove('blur-background'));
-        modal.remove();
-    });
+  $(modal).on('hidden.bs.modal', function () {
+    bodyChildren.forEach(el => el.classList.remove('blur-background'));
 
-    aplicarEstilosModal();
+    modal.remove();
 
-        $('#formPostulacion').on('keypress', function (e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-      }
-    });
+  });
 
-    // ------------------ Función para mostrar Paso 2 ------------------
-function mostrarPaso2(datos = {}) {
+  aplicarEstilosModal();
+
+  $('#formPostulacion').on('keypress', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
+  });
+
+  // ------------------ Función para mostrar Paso 2 ------------------
+  function mostrarPaso2(datos = {}) {
     $('#paso1, #pasoToken').hide();
     $('#paso2').show();
 
@@ -596,71 +664,75 @@ function mostrarPaso2(datos = {}) {
 
     // Mostrar CV existente si existe
     if (datos.cv_link && datos.cv_link !== 'null' && datos.cv_link !== '') {
-        $('#cvInfo').html(`
+      $('#cvInfo').html(`
             <p>Ya tienes un CV cargado: 
                 <a href="${datos.cv_link}" target="_blank">Ver/Descargar CV</a>
             </p>
             <p>Si deseas actualizarlo, sube un nuevo archivo PDF. De lo contrario, deja este campo vacío.</p>
         `);
     } else {
-        $('#cvInfo').html('');
+      $('#cvInfo').html('');
     }
 
     $('#btnEnviar').show();
-}
-    // ------------------ Verificar correo ------------------
-    $('#btnVerificarCorreo').off('click').on('click', function () {
-        const correo = $('#correo_candidate').val().trim();
-        if (!validateEmail(correo)) { alert("Ingresa un correo válido"); return; }
+  }
+  // ------------------ Verificar correo ------------------
+  $('#btnVerificarCorreo').off('click').on('click', function () {
+    const correo = $('#correo_candidate').val().trim();
+    if (!validateEmail(correo)) { alert("Ingresa un correo válido"); return; }
 
-        fetch("http://localhost/Chatbot-AdminCenter/modelo/guardarPostulacion.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ correo_candidate: correo })
-        })
-        .then(res => res.json())
-        .then(data => {
-           
-          if (manejarSesionExpirada(data)) return; 
-           // <<--- Checar sesión expirada
-            if (data.requiere_token) {
-                // Paso token
-                $('#paso1').hide();
-                $('#pasoToken').show();
+    fetch("http://localhost/Chatbot-AdminCenter/modelo/guardarPostulacion.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ correo_candidate: correo })
+    })
+      .then(res => res.json())
+      .then(data => {
 
-                $('#btnVerificarToken').off('click').on('click', function () {
-                    const tokenIngresado = $('#token_verificacion').val().trim();
-                    fetch("http://localhost/Chatbot-AdminCenter/modelo/guardarPostulacion.php", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ correo_candidate: correo, token: tokenIngresado })
-                    })
-                    .then(res => res.json())
-                    .then(resp => {
-                        if(resp.valido) {
-                            mostrarPaso2(resp.datosCandidato || resp);
-                        } else {
-                            alert(resp.mensaje || "Código incorrecto");
-                        }
-                    });
-                });
+        if (manejarSesionExpirada(data)) return;
+        // <<--- Checar sesión expirada
+        if (data.requiere_token) {
+          // Paso token
+          $('#paso1').hide();
+          $('#pasoToken').show();
 
-            } else {
-                // Paso 2 directo
-                mostrarPaso2(data.datosCandidato || {
-                    nombre_candidate: data.nombre_candidate,
-                    apellidop_candidate: data.apellidop_candidate,
-                    apellidom_candidate: data.apellidom_candidate,
-                    tel_candidate: data.tel_candidate,
-                     cv_link: data.cv_link
-                });
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Error al verificar el correo");
-        });
-    });
+          $('#btnVerificarToken').off('click').on('click', function () {
+            const tokenIngresado = $('#token_verificacion').val().trim();
+            fetch("http://localhost/Chatbot-AdminCenter/modelo/guardarPostulacion.php", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ correo_candidate: correo, token: tokenIngresado })
+            })
+              .then(res => res.json())
+              .then(resp => {
+                if (resp.valido) {
+                  mostrarPaso2(resp.datosCandidato || resp);
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Código incorrecto',
+                    text: resp.mensaje || 'Por favor, verifica el código ingresado.'
+                  });
+                }
+              });
+          });
+
+        } else {
+          // Paso 2 directo
+          mostrarPaso2(data.datosCandidato || {
+            nombre_candidate: data.nombre_candidate,
+            apellidop_candidate: data.apellidop_candidate,
+            apellidom_candidate: data.apellidom_candidate,
+            tel_candidate: data.tel_candidate,
+            cv_link: data.cv_link
+          });
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error al verificar el correo");
+      });
+  });
   // ------------------ Validación CV ------------------
   $('#CV_candidate').on('change', function () {
     const file = this.files[0];
@@ -669,12 +741,21 @@ function mostrarPaso2(datos = {}) {
 
     if (file) {
       const sizeMB = file.size / (1024 * 1024);
+      // Validar tipo de archivo
+      if (file.type !== 'application/pdf') {
+        cvInfo.html(`<p style="color:red;">Solo se permiten archivos PDF.</p>`);
+        btnEnviar.prop('disabled', true);
+        this.value = "";
+        return;
+      }
+
+      // Validar tamaño máximo (5 MB)
       if (sizeMB > 5) {
-        cvInfo.html(`<p style="color:red;">El archivo es demasiado grande. Máximo permitido: 5 MB</p>`);
+        cvInfo.html(`<p style="color:red;">El archivo es demasiado grande. Máximo permitido: 5 MB.</p>`);
         btnEnviar.prop('disabled', true);
         this.value = "";
       } else {
-        cvInfo.html(`<p style="color:green;">Archivo listo (${sizeMB.toFixed(2)} MB)</p>`);
+        cvInfo.html(`<p style="color:green;">Archivo válido (${sizeMB.toFixed(2)} MB).</p>`);
         btnEnviar.prop('disabled', false);
       }
     } else {
@@ -696,37 +777,44 @@ function mostrarPaso2(datos = {}) {
 
     const formData = new FormData(this);
     formData.append('idRequisicion', idRequisicion);
+    formData.append('nombreVacante', nombreVacante);
     formData.append('id_emp', id_emp);
 
     fetch("http://localhost/Chatbot-AdminCenter/modelo/guardarPostulacion.php", {
       method: "POST",
       body: formData
     })
-    .then(res => res.json())
-    .then(data => {
-      if (manejarSesionExpirada(data)) return;
+      .then(res => res.json())
+      .then(data => {
+        if (manejarSesionExpirada(data)) return;
 
-      if (data.tipo === "alerta") {
-        Swal.fire({ icon: 'error', title: 'Atención', text: data.mensaje });
-      } else {
-           Swal.fire({
-      icon: 'success',
-      title: '¡Éxito!',
-      text: data.mensaje || "Postulación enviada correctamente",
-        }).then(() => {
-      $('#modal-postulacion').modal('hide'); // Cerrar modal con jQuery
-    });
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      alert("Error al enviar la postulación");
-    });
+        // Validar si el mensaje contiene éxito
+        if (data.mensaje && data.mensaje.toLowerCase().includes("correctamente")) {
+          Swal.fire({
+            icon: 'success',
+            title: '¡Éxito!',
+            text: data.mensaje,
+          }).then(() => {
+            $('#modal-postulacion').modal('hide'); // Cerrar modal
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Atención',
+            text: data.mensaje || "Ocurrió un error al enviar la postulación",
+          });
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: "Error al enviar la postulación",
+        });
+      });
   });
-
-
 }
-
 
 // ------------------ FUNCION GLOBAL PARA SESIÓN EXPIRADA ------------------
 function manejarSesionExpirada(data) {
@@ -750,6 +838,7 @@ function manejarSesionExpirada(data) {
 
 // -------------------- SEGUIMIENTO DE POSTULACIONES --------------------
 function seguimientoPostulacion() {
+
   flujoConversacion = "seguimiento";
   window.temaSeguimiento = windowConfig.conversacion.find(c => c.tema.toLowerCase().includes("seguimiento"));
 
@@ -759,6 +848,9 @@ function seguimientoPostulacion() {
   }
 
   estadoConversacion = "preguntaUsuario";
+
+
+
 
   if (window.temaSeguimiento.urlInforme && window.temaSeguimiento.columna) {
     cargarCSV(window.temaSeguimiento.urlInforme, window.temaSeguimiento.columna, true);
@@ -773,7 +865,11 @@ function seguimientoPostulacion() {
     userInput.disabled = false;
     userInput.value = "";
     userInput.focus();
+
+
   }
+
+
 
   const btnEnviar = inputContainer.querySelector("button");
   if (btnEnviar && windowConfig.estilos.colorPrimario) {
@@ -785,43 +881,14 @@ function seguimientoPostulacion() {
     btnEnviar.style.cursor = "pointer";
   }
 }
-//---------------FUNCIÓN DE MANEJO DEL FLUJO DEL SEGUIMIENTO-------------
-function manejarFlujoSeguimiento(userInput) {
-  if (estadoConversacion !== "preguntaUsuario") return;
 
-  const columna = window.temaSeguimiento.columna;
-  const csvData = csvDataPorColumna[columna] || [];
-  const resultados = csvData.filter(item => item[columna] === userInput);
-
-  if (resultados.length > 0) {
-    agregarMensajeChatbot("Postulaciones encontradas:");
-
-    resultados.forEach(item => {
-      let html = "<div class='resultado-csv'>";
-      Object.keys(item).forEach(col => {
-        if (item[col]) html += `<p><strong>${col}:</strong> ${item[col]}</p>`;
-      });
-      html += "</div>";
-      agregarMensajeChatbot(html);
-    });
-  } else {
-    agregarMensajeChatbot("No se encontraron coincidencias con tu información.");
-  }
-
-  // Ocultar input
-  const inputContainer = document.getElementById("user-input-container");
-  if (inputContainer) inputContainer.style.display = "none";
-
-  confirmacionAyuda();
-  estadoConversacion = "finalizado";
-}
 //--------------------ESTILOS DEL JSON PARA EL MODAL
 function aplicarEstilosModal() {
   if (!windowConfig.estilos) return;
 
   const btnSiguiente = document.getElementById("btnVerificarCorreo");
   const btnEnviar = document.getElementById("btnEnviar");
-   const btnToken = document.getElementById("btnVerificarToken");
+  const btnToken = document.getElementById("btnVerificarToken");
   const btnCancelar = document.querySelector("#modal-postulacion .btn-secondary");
 
   [btnSiguiente, btnEnviar, btnToken].forEach(btn => {
@@ -881,6 +948,7 @@ function manejarFlujoSeguimiento(userInput) {
   if (estadoConversacion !== "preguntaUsuario") return;
 
   const columnaClave = window.temaSeguimiento.columna;
+
   const csvData = csvDataPorColumna[columnaClave] || [];
 
   const resultados = csvData.filter(item => {
@@ -891,13 +959,28 @@ function manejarFlujoSeguimiento(userInput) {
   if (resultados.length > 0) {
     agregarMensajeChatbot("Postulaciones encontradas:");
 
+    // Definir aquí las columnas que quieres mostrar
+    const columnasMostrar = {
+      candStatus_ix: "Estatus de postulación",
+      title_ix: "Vacante postulada",
+      name_ix: "Nombre",
+      lastName_ix: "Apellido",
+      email_ix: "Correo Electrónico"
+    };
+
     resultados.forEach(item => {
       let html = "<div class='resultado-csv'>";
-      
-      // Mostrar solo columnas "reales"
-      Object.keys(item).forEach(col => {
-        if (col && !col.startsWith("_")) { // Ignorar columnas automáticas de PapaParse
-          html += `<p><strong>${col}:</strong> ${item[col] || '-'}</p>`;
+
+      // Mostrar solo columnas
+      //Object.keys(item).forEach(col => {
+      //if (col && !col.startsWith("_")) { // Ignorar columnas automáticas de PapaParse
+      //html += `<p><strong>${col}:</strong> ${item[col] || '-'}</p>`;
+      //}
+      //});
+      // Mostrar solo las columnas que definiste arriba
+      Object.keys(columnasMostrar).forEach(col => {
+        if (item[col] !== undefined && item[col] !== "") {
+          html += `<p><strong>${columnasMostrar[col]}:</strong> ${item[col]}</p>`;
         }
       });
 
@@ -957,25 +1040,90 @@ function bloquearBotones(ultimo) {
 
 function funcionSi() {
   temaEnCurso = false;
-  const contenidoInicial = `
-          <div id="mensaje-inicial" class="chatbot-message">
-              <p>¡Con gusto! ¿En qué más puedo ayudarte?</p>
-              <div class="chatbot-button-container">
-                  <button onclick="mostrarPreguntaPerfil()">Buscar vacantes por categoría</button>
-                  <button onclick="iniciarBusquedaPorUbicacion()">Buscar vacantes por ubicación</button>
-                  <button onclick="seguimientoPostulacion()">Seguimiento de mi postulación</button>
-              </div>
-          </div>`;
+  mensajeSeguimientoMostrado = false;
+
+  // Crear contenedor como elemento HTML
+  const contenidoInicial = document.createElement("div");
+  contenidoInicial.className = "chatbot-message";
+  contenidoInicial.innerHTML = `
+      <p>¡Con gusto! ¿En qué más puedo ayudarte?</p>
+      <div class="chatbot-button-container">
+          <button>Buscar vacantes por categoría</button>
+          <button>Buscar vacantes por ubicación</button>
+          <button>Seguimiento de mi postulación</button>
+      </div>
+  `;
+
   const contenedor = document.querySelector(".chatbot-body");
-  contenedor.insertAdjacentHTML("beforeend", contenidoInicial);
-  contenedor.lastElementChild.scrollIntoView({ behavior: "smooth" });
-  aplicarEstilosBotones(contenedor.lastElementChild);
+  contenedor.appendChild(contenidoInicial);
+  contenidoInicial.scrollIntoView({ behavior: "smooth" });
+  aplicarEstilosBotones(contenidoInicial);
+
+  // Asignar click con bloqueo a cada botón
+  const botones = contenidoInicial.querySelectorAll("button");
+  botones.forEach(btn => {
+    btn.addEventListener("click", () => {
+      // Bloquear todos los botones
+      botones.forEach(b => b.disabled = true);
+
+      if (btn.textContent.includes("categoría")) {
+        mostrarPreguntaPerfil();
+      }
+      else if (btn.textContent.includes("ubicación")) {
+        iniciarBusquedaPorUbicacion();
+      }
+      else if (btn.textContent.includes("Seguimiento")) {
+        // Buscar tema de seguimiento en el JSON
+        const temaSeguimiento = windowConfig.conversacion.find(c => c.tema.toLowerCase().includes("seguimiento"));
+
+        // Siempre mostrar el mensaje del JSON
+        if (temaSeguimiento && temaSeguimiento.mensaje) {
+          agregarMensajeChatbot(temaSeguimiento.mensaje);
+        }
+
+
+
+        // Ejecutar la acción según el texto del botón
+        if (btn.textContent.includes("categoría")) mostrarPreguntaPerfil();
+        else if (btn.textContent.includes("ubicación")) iniciarBusquedaPorUbicacion();
+        else if (btn.textContent.includes("Seguimiento")) seguimientoPostulacion();
+      }
+    });
+  });
 }
 
+
 function funcionNo() {
-  setTimeout(() => {
-    temaEnCurso = false;
-    agregarMensajeChatbot(`<div style="text-align:center;"><p>${windowConfig.despedida || "¡Gracias por usar nuestro asistente virtual!"}</p></div>`);
-  }, 500);
+  temaEnCurso = false;
+
+  const contenedor = document.querySelector(".chatbot-body");
+
+  const mensajeDespedida = document.createElement("div");
+  mensajeDespedida.className = "chatbot-message";
+  mensajeDespedida.style.display = "flex";
+  mensajeDespedida.style.flexDirection = "column";
+  mensajeDespedida.style.alignItems = "center";
+  mensajeDespedida.style.gap = "10px";
+  mensajeDespedida.style.textAlign = "center";
+
+  // Texto
+  const texto = document.createElement("p");
+  texto.textContent = windowConfig.despedida || "¡Gracias por usar nuestro asistente virtual!";
+  texto.style.margin = 0;
+
+  // Logo
+  const logo = document.createElement("img");
+  logo.src = windowConfig.estilos.logo || "";
+  logo.alt = "Logo Chatbot";
+  logo.style.width = "60px";
+  logo.style.height = "60px";
+
+  mensajeDespedida.appendChild(texto);
+  mensajeDespedida.appendChild(logo);
+
+  contenedor.appendChild(mensajeDespedida);
+  mensajeDespedida.scrollIntoView({ behavior: "smooth" });
+
+  // Luego cerrar chatbot después de unos segundos
   setTimeout(cerrar, 3500);
 }
