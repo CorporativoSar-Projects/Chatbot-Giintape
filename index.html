@@ -3,8 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Chatbot JobHelper</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://giintapeinnovahue.com/css/stylesIXAH.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -13,26 +12,26 @@
 
 <body>
   <!-- Botón para abrir el chatbot -->
-  <div id="chatbot-toggle" class="chat-toggle">
-    <img src="https://chatbot.giintapeinnovahue.com/img/chatbot2.png" alt="Chat" class="toggle-icon">
-    <span id="chatText" class="chat-text"></span>
+  <div id="chatbot-toggle" class="chat-toggle-ixah">
+    <img src="https://chatbot.giintapeinnovahue.com/img/chatbot2.png" alt="Chat" class="toggle-icon-ixah">
+    <span id="chatText" class="chat-text-ixah"></span>
   </div>
 
   <!-- Contenedor del Chatbot -->
-  <div id="chatbot-container" class="chatbot-container" style="display: none;">
+  <div id="chatbot-container" class="chatbot-container-ixah" style="display: none;">
 
-    <div class="chatbot-header">
-      <img src="https://chatbot.giintapeinnovahue.com/img/gi.png" alt="Chatbot" class="chatbot-icon">
+    <div class="chatbot-header-ixah">
+      <img src="https://chatbot.giintapeinnovahue.com/img/gi.png" alt="Chatbot" class="chatbot-icon-ixah">
       <span class="chatbot-nombre"></span>
-      <div class="conteiner">
-        <div class="chatbot-min" title="Minimizar" onclick="toggleChatbot()">
-          <svg class="icono-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <div class="conteiner-ixah">
+        <div class="chatbot-min-ixah" title="Minimizar" onclick="toggleChatbot()">
+          <svg class="icono-svg-ixah" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
             <path
               d="M 6 12 C 6 11.449219 6.449219 11 7 11 L 17 11 C 17.550781 11 18 11.449219 18 12 C 18 12.550781 17.550781 13 17 13 L 7 13 C 6.449219 13 6 12.550781 6 12 Z" />
           </svg>
         </div>
-        <div class="chatbot-close" title="Cerrar" onclick="cerrar()">
-          <svg class="icono-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+        <div class="chatbot-close-ixah" title="Cerrar" onclick="cerrar()">
+          <svg class="icono-svg-ixah" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="miter">
             <path d="M 16 8 L 8 16 M 8 8 L 16 16" />
           </svg>
@@ -40,10 +39,10 @@
       </div>
     </div>
 
-    <div class="chatbot-body">
-      <div id="mensaje-inicial" class="chatbot-message">
+    <div class="chatbot-body-ixah">
+      <div id="mensaje-inicial" class="chatbot-message-ixah">
         <p></p>
-        <div class="chatbot-button-container">
+        <div class="chatbot-button-container-ixah">
           <button onclick="mostrarPreguntaPerfil()"></button>
           <button onclick="iniciarBusquedaPorUbicacion()"></button>
           <button onclick="seguimientoPostulacion()"></button>
@@ -53,7 +52,7 @@
     </div>
 
     <!-- Caja de texto y botón para enviar respuestas, inicialmente ocultos -->
-    <div id="user-input-container" class="user-input-container" style="display:none;">
+    <div id="user-input-container" class="user-input-container-ixah" style="display:none;">
       <input type="text" id="user-input" placeholder="Escribe aquí tu respuesta...">
       <button onclick="enviarRespuesta()">Enviar</button>
     </div>
@@ -63,14 +62,14 @@
 
   <!-- ubicacion-->
   <!-- Contenedor para seleccionar estado, oculto inicialmente -->
-  <div id="seleccion-estado-container" class="chatbot-message" style="display: none;">
+  <div id="seleccion-estado-container" class="chatbot-message-ixah" style="display: none;">
     <select id="seleccion-estado">
 
     </select>
 
   </div>
   <!-- Contenedor para seleccionar alcaldía, oculto inicialmente -->
-  <div id="seleccion-alcaldia-container" class="chatbot-message" style="display: none;">
+  <div id="seleccion-alcaldia-container" class="chatbot-message-ixah" style="display: none;">
     <select id="seleccion-alcaldia">
       <!-- Opciones de alcaldías aquí -->
     </select>

@@ -20,7 +20,7 @@
 }
 
 
-.chat-text {
+.chat-text-ixah {
   position:absolute;
   right: 70px;
   bottom: 16px;
@@ -43,7 +43,7 @@
   opacity: 1;
 }
 
-.chat-text.hidden {
+.chat-text-ixah.hidden {
   opacity: 0; 
 }
 
@@ -53,10 +53,10 @@
 
 
 
-.chatbot-container.open {
+.chatbot-container-ixah.open {
   transform: scale(1); /* Escala el chatbot a su tamaño original */
 }
-.chatbot-header {
+.chatbot-header-ixah {
   top: 0; 
   position: sticky;
   background-color: #f1f1f1;
@@ -69,36 +69,36 @@
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
-.chatbot-icon {
+.chatbot-icon-ixah {
   margin-right: 10px;
 }
 
-.conteiner{
+.conteiner-ixah{
   display: flex;
   align-content: space-between;
 }
 
-.chatbot-min {
+.chatbot-min-ixah {
   cursor: pointer;
   margin-right: 5px; 
   padding: 10px 15px;
 }
 
-.chatbot-min:hover{
+.chatbot-min-ixah:hover{
   background-color:#CDCBCB;
 }
 
 
-.chatbot-close {
+.chatbot-close-ixah {
   cursor: pointer;
   margin-right: 5px;
   padding: 10px 15px;
 }
 
-.chatbot-close:hover{
+.chatbot-close-ixah:hover{
   background-color: #FFA0AA;
 }
-.chatbot-body {
+.chatbot-body-ixah {
   display: flex;
   flex-direction: column;
   align-items: flex-end; /* Alinea los mensajes a la derecha */
@@ -110,7 +110,7 @@
 }
 
 
-.chatbot-message {
+.chatbot-message-ixah {
   background-color: #fff;
   padding: 10px;
   border-radius: 5px;
@@ -125,7 +125,7 @@
   border-radius: 5px;
   cursor: pointer;
 }
-.chatbot-button-container {
+.chatbot-button-container-ixah {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -171,7 +171,7 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
-.chat-toggle {
+.chat-toggle-ixah{
   position: fixed;
   right: 20px;
   bottom: 20px;
@@ -185,14 +185,14 @@
 animation: parpadeo 2s ease-in-out infinite;
 }
 
-.toggle-icon {
+.toggle-icon-ixah{
   width: 60px; /* O el tamaño que prefieras */
   height: 60px;
   border-radius: 50%; /* Esto hará que la imagen sea completamente redonda */
   object-fit: cover; 
 }
 
-.chatbot-icon{
+.chatbot-icon-ixah{
   width: 30px; /* Nuevo tamaño más pequeño */
   height: 30px;
   object-fit: cover; /* Ajusta la imagen dentro del espacio asignado */
@@ -201,7 +201,7 @@ animation: parpadeo 2s ease-in-out infinite;
 
 
 /* Estilos para los mensajes del chatbot */
-.chatbot-message {
+.chatbot-message-ixah {
 background-color: #f1f1f1; /* Fondo para el chatbot */
 color: #333; /* Color de texto para el chatbot */
 padding: 10px;
@@ -227,7 +227,7 @@ align-self: flex-end; /* Alinea los mensajes del usuario a la derecha */
 box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 
 }
-.user-input-container {
+.user-input-container-ixah {
   display:flex;
   justify-content: space-between;
   padding: 3px;

@@ -1,5 +1,5 @@
 /* styles.css */
-.chatbot-container {
+.chatbot-container-ixah {
   display: flex;
   width: 400px;
   max-height: 500px;
@@ -18,7 +18,7 @@
   transform-origin: bottom right; /* El efecto de escala se originará desde la esquina inferior derecha */
 }
 
-.chat-text {
+.chat-text-ixah {
   position: absolute;
   right: 70px;
   bottom: 16px;
@@ -41,7 +41,7 @@
   opacity: 1;
 }
 
-.chat-text.hidden {
+.chat-text-ixah.hidden {
   opacity: 0;
 }
 
@@ -49,10 +49,10 @@
   animation: blink 2s linear infinite;
 }
 
-.chatbot-container.open {
+.chatbot-container-ixah.open {
   transform: scale(1); /* Escala el chatbot a su tamaño original */
 }
-.chatbot-header {
+.chatbot-header-ixah {
   top: 0;
   position: sticky;
   background-color: #FB8500;
@@ -66,18 +66,18 @@
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
-.chatbot-icon {
+.chatbot-icon-ixah {
   margin-right: 10px;
 }
 
-.conteiner {
+.conteiner-ixah{
   display: flex;
   align-items: center;
   gap: 15px; 
 }
 
-.chatbot-min,
-.chatbot-close {
+.chatbot-min-ixah,
+.chatbot-close-ixah {
   cursor: pointer;
   padding: 7px; /* menos padding para que no se vean tan grandes */
   border-radius: 50%; /* redondeado tipo botón */
@@ -87,21 +87,17 @@
 }
 
 
-
-
-
-
-.chatbot-close:hover {
+.chatbot-close-ixah:hover {
   background-color: #ffa0aa;
 }
 
-.icono-svg {
+.icono-svg-ixah {
   color: var(--color-texto-boton, #000000);
   width: 24px;
   height: 24px;
   cursor: pointer;
 }
-.chatbot-body {
+.chatbot-body-ixah {
   display: flex;
   flex-direction: column;
   align-items: flex-end; /* Alinea los mensajes a la derecha */
@@ -115,7 +111,7 @@
 
 }
 
-.chatbot-message {
+.chatbot-message-ixah {
   background-color: #fff;
   padding: 10px;
   border-radius: 5px;
@@ -129,14 +125,14 @@
   border-radius: 5px;
   cursor: pointer;
 }
-.chatbot-button-container {
+.chatbot-button-container-ixah {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   box-shadow: rgba(61, 140, 160, 0.1);
 }
 
-.chatbot-button-container button {
+.chatbot-button-container-ixah button {
   margin: 5px;
   padding: 5px 10px;
   border: none;
@@ -148,15 +144,15 @@
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
-.chatbot-button-container button:hover {
+.chatbot-button-container-ixah button:hover {
   background-color: #FB8500;
 }
-.user-input {
+.user-input-ixah {
   flex-grow: 1; /* Permite que el input crezca y llene el espacio disponible */
   margin-right: 10px;
 }
 
-.user-input input {
+.user-input-ixah input {
   flex: 1;
   padding: 5px;
   border: 1px solid #ccc;
@@ -181,7 +177,7 @@
     opacity: 0.5;
   }
 }
-.chat-toggle {
+.chat-toggle-ixah {
   position: fixed;
   right: 20px;
   bottom: 20px;
@@ -193,20 +189,20 @@
   animation: parpadeo 2s ease-in-out infinite;
 }
 
-.toggle-icon {
+.toggle-icon-ixah {
   width: 60px; /* O el tamaño que prefieras */
   height: 60px;
   border-radius: 50%; /* Esto hará que la imagen sea completamente redonda */
   overflow: hidden;
 }
 
-.toggle-icon img {
+.toggle-icon-ixah img {
   width: 100%;
   height: 100%;
   object-fit: cover; /* Ajusta la imagen dentro del círculo sin deformarla */
 }
 
-.chatbot-icon {
+.chatbot-icon-ixah {
   width: 45px;
   height: 45px;
   border-radius: 40%;
@@ -223,7 +219,7 @@
   transition: filter 0.3s;
 }
 /* Estilos para los mensajes del chatbot */
-.chatbot-message {
+.chatbot-message-ixah {
   background-color: #ffffff; /* Fondo para el chatbot */
   color: #333; /* Color de texto para el chatbot */
   padding: 10px;
@@ -240,7 +236,7 @@
 
 
 /* Estilos para los mensajes del usuario */
-.user-message {
+.user-message-ixah {
   background-color: #ffffff; /* Fondo azul para el usuario */
   color: black; /* Texto blanco para mejor contraste */
   padding: 10px;
@@ -253,7 +249,7 @@
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 /* Respuesta de usuario personalizada */
-.user-message2 {
+.user-message2-ixah {
   background-color: #FB8500; /* Fondo azul para el usuario */
   color: black; /* Texto blanco para mejor contraste */
   padding: 10px;
@@ -266,7 +262,7 @@
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
-.user-input-container {
+.user-input-container-ixah{
   display: flex;
   justify-content: space-between;
   padding: 3px;
@@ -274,7 +270,7 @@
   border-top: 1px solid #ccc; /* Línea divisoria entre el chat y la caja de texto */
 }
 
-.user-input-container input[type="text"] {
+.user-input-container-ixah input[type="text"] {
   flex-grow: 1;
   width: 73%;
   padding: 8px;
@@ -284,11 +280,11 @@
   transition: width 0.5s;
 }
 
-.user-input-container input[type="text"]:focus {
+.user-input-container-ixah input[type="text"]:focus {
   width: 70%; /* Tamaño cuando el input está enfocado */
 }
 
-.user-input-container button {
+.user-input-container-ixah button {
   padding: 8px 15px;
   border: none;
   border-radius: 4px;
@@ -296,7 +292,7 @@
 }
 
 /*ubicacion*/
-.chatbot-body select {
+.chatbot-body-ixah select {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
